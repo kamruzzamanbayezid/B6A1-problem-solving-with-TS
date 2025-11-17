@@ -25,25 +25,25 @@ class Person {
   }
 
   getDetails() {
-    return `Name: ${this.name}, Age: ${this.age}`;
+    return `'Name: ${this.name}, Age: ${this.age}'`;
   }
 }
 
-interface Item {
+type Item = {
   title: string;
-  rating: 0 | 1 | 2 | 3 | 4 | 5;
-}
+  rating: number;
+};
 const filterByRating = (arr: Item[]): Item[] => {
   const filteredByRating = arr.filter((element) => element.rating >= 4);
   return filteredByRating;
 };
 
-interface User {
+type User = {
   id: number;
   name: string;
   email: string;
   isActive: boolean;
-}
+};
 const filterActiveUsers = (arr: User[]): User[] => {
   const filteredArrWithActiveUser = arr.filter(
     (element) => element.isActive === true
@@ -66,44 +66,44 @@ const printBookDetails = (object: Book) => {
   );
 };
 
-// Create a function getUniqueValues that accepts two arrays and returns a new array containing only the unique values from both arrays, without any duplicates.
-
-// Requirements:
-// You must write the correct type for the function parameter and the return type.
-// The function should handle arrays of strings or numbers.
-// You are not allowed to use any built-in methods to solve this problem.
-
 const getUniqueValues = <T extends string | number>(
   arr1: T[],
   arr2: T[]
 ): T[] => {
   const restArr = [...arr1, ...arr2];
-  const newArr = [];
+  const newArr: T[] = [];
 
   for (let i = 0; i < restArr.length; i++) {
-    
-      for (let i = 0; i < newArr.length; i++) {
-            
+    let matchElement = false;
+
+    for (let j = 0; j < newArr.length; j++) {
+      if (newArr[j] === restArr[i]) {
+        matchElement = true;
+        break;
       }
-    
+    }
+
+    if (!matchElement) {
+      newArr[newArr.length] = restArr[i];
+    }
   }
+
+  return newArr;
 };
 
-const array1 = [1, 2, 3, 4, 5];
-const array2 = [3, 4, 5, 5, 3, 6, 7];
-console.log(getUniqueValues(array1, array2));
-[1, 2, 3, 4, 5, 6, 7]; // expected result
-
-// Create a function calculateTotalPrice that accepts an array of product objects. Each product object contains the following properties:
-
-// name (string)
-// price (number)
-// quantity (number)
-// discount? (optional number, percentage between 0-100)
-// The function should return the total price of all products in the array, taking into account the discount for each product (if provided). If the array is empty, return 0.
-
-// Requirements:
-// You must write the correct type for the function parameter and the return type.
-// Use array methods (map, reduce, etc.) to calculate the total.
-// The total price of each product is calculated as: (price * quantity).
-// Correctly handle products with and without the discount property.
+type Product = {
+  name: string;
+  price: number;
+  quantity: number;
+  discount?: number;
+};
+const calculateTotalPrice = (arr: Product[]): number => {
+  const totalPrice = arr.reduce((prev, curr) => {
+    const discountPrice = curr.discount
+      ? curr.price * (curr?.discount / 100)
+      : 0;
+    const priceAfterDis = curr.price - discountPrice;
+    return prev + priceAfterDis * curr.quantity;
+  }, 0);
+  return totalPrice;
+};
